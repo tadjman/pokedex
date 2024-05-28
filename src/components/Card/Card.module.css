@@ -1,0 +1,41 @@
+.card {
+    border: 1px solid black;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .card img {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .card h2 {
+    font-size: 1.2rem;
+    margin: 10px 0;
+  }
+  
+  .types {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  
+  .type {
+    padding: 4px 8px;
+    border-radius: 12px;
+    color: #fff;
+    text-transform: capitalize;
+  }
+  
+  
+  

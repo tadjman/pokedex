@@ -1,0 +1,17 @@
+.header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: #f19374; 
+    width: 100%;
+}
+
+.icon {
+    height: 50px; 
+    margin-right: 10px; 
+}
+
+.logo {
+    height: 50px;
+    cursor: pointer;
+}
