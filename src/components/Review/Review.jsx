@@ -1,10 +1,13 @@
+import React from 'react';
 import './Review.module.css';
 
-export const Review = ({ content, author }) => {
-    return (
-        <div className="review">
-          <p>{content}</p>
-          <p className="author">Posted by: {author}</p>
-        </div>
-      );
-    };
+export const Review = ({ author, content }) => {
+  return (
+    <div className="card mb-3">
+      <div className="card-body">
+        <p className="card-text">{content}</p>
+        <footer className="blockquote-footer">{author}</footer>
+      </div>
+    </div>
+  );
+};

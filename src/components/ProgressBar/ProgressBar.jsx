@@ -1,3 +1,4 @@
+import React from 'react';
 import './ProgressBar.module.css';
 
 export const ProgressBar = ({ label, value, max }) => {
@@ -13,5 +14,3 @@ export const ProgressBar = ({ label, value, max }) => {
     </div>
   );
 };
-
-export default ProgressBar;

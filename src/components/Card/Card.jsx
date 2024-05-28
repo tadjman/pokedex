@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PKMN_TYPES } from '../../constants/constants'; // Import des constantes
+import { PKMN_TYPES } from '../../constants/constants';
 import './Card.module.css';
 
-const Card = ({ id }) => {
+export const Card = ({ id }) => {
   const [pokemon, setPokemon] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Utilisation du hook useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPokemon = async () => {
@@ -41,22 +41,23 @@ const Card = ({ id }) => {
   };
 
   return (
-    <div className="card" onClick={handleClick}>
-      <h2>#{id} {pokemon.name}</h2>
-      <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`} alt={pokemon.name} />
-      <div className="types">
-        {pokemon.types.map((type, index) => (
-          <span
-            key={index}
-            className="type"
-            style={{ backgroundColor: getTypeColor(type) }}
-          >
-            {type}
-          </span>
-        ))}
+    <div className="card pokemon-card mb-4" onClick={handleClick} style={{ cursor: 'pointer' }}>
+      <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`} alt={pokemon.name} className="card-img-top pokemon-image mx-auto" />
+      <div className="card-body text-center">
+        <h5 className="card-id">#{id}</h5>
+        <h5 className="card-title">{pokemon.name}</h5>
+        <div className="types">
+          {pokemon.types.map((type, index) => (
+            <span
+              key={index}
+              className="badge badge-pill"
+              style={{ backgroundColor: getTypeColor(type), color: 'white', marginRight: '5px' }}
+            >
+              {type}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );
 };
-
-export default Card;
