@@ -56,7 +56,7 @@ export const DetailPage = () => {
 
     fetchPokemon();
     fetchReviews();
-  }, [id]); // *****
+  }, [id]); // Array loading with pokemon id
 
   // add new review
   const handleAddReview = () => {
