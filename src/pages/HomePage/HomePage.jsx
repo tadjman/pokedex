@@ -9,7 +9,7 @@ export const HomePage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fonction pour récupérer la liste des Pokémon
+    // Get full pokemon
     const fetchPokemons = async () => {
       try {
         const response = await fetch('http://localhost:3001/pokemons');
@@ -26,22 +26,22 @@ export const HomePage = () => {
     };
 
     fetchPokemons();
-  }, []); // Le tableau vide signifie que ça se lance une seule fois au montage du compsant
+  }, []); // Array loading once, only at the beginning
 
-  // Fonction pour gérer les changement dans la barre de recherche
+  // Function SearchBar 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value.toLowerCase());
   };
 
-  // Filtre les Pokémon en fonction du nom oui du type
+  // Filter pokemon by name or type
   const filteredPokemons = pokemons.filter(pokemon => {
     const nameMatch = pokemon.name.toLowerCase().includes(searchTerm);
     const typeMatch = pokemon.types.some(type => type.toLowerCase().includes(searchTerm));
     return nameMatch || typeMatch;
   });
 
-  if (loading) return <div>Loading...</div>; // Affiche un message de chargement
-  if (error) return <div>Error: {error.message}</div>; // Affiche un message d'erreur
+  if (loading) return <div>Loading...</div>; // Show loading message 
+  if (error) return <div>Error: {error.message}</div>; // Show error message
 
   return (
     <div className="home-page container">
@@ -51,10 +51,10 @@ export const HomePage = () => {
         value={searchTerm}
         onChange={handleSearchChange}
         className="form-control mb-4 mt-4"
-        style={{ maxWidth: '500px', margin: '0 auto' }} // Centre la barre
+        style={{ maxWidth: '500px', margin: '0 auto' }}
       />
       {filteredPokemons.length === 0 ? (
-        <div className="text-center">No Pokémon found for "{searchTerm}"</div> // Message si aucun Pokémon trouvé
+        <div className="text-center">No Pokémon found for "{searchTerm}"</div> // Error message if no result
       ) : (
         <div className="row">
           {filteredPokemons.map(pokemon => (
