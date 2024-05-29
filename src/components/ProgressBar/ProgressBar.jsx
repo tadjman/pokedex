@@ -8,11 +8,11 @@ export const ProgressBar = ({ label, value, max }) => {
 
   let bgColor;
   if (percentage > 50) {
-    bgColor = 'bg-success'; // Vert
+    bgColor = 'bg-success'; // Vert si ya plus de 50ù des stats
   } else if (percentage > 25) {
-    bgColor = 'bg-warning'; // Orange
+    bgColor = 'bg-warning'; // Orange si ya moins de 50% des stats
   } else {
-    bgColor = 'bg-danger'; // Rouge
+    bgColor = 'bg-danger'; // Rouge si moins de 25% des stats
   }
 
   return (

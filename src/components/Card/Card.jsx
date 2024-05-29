@@ -10,6 +10,7 @@ export const Card = ({ id }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Fonction pour fetcher les données d'un Pokémon spécifique
     const fetchPokemon = async () => {
       try {
         const response = await fetch(`http://localhost:3001/pokemons/${id}`);
@@ -26,16 +27,18 @@ export const Card = ({ id }) => {
     };
 
     fetchPokemon();
-  }, [id]);
+  }, [id]); // Le tableau avec [id] signifie que ça se lance quand l'ID change
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  if (loading) return <div>Loading...</div>; // Affiche un message de chargement
+  if (error) return <div>Error: {error.message}</div>; // Affiche un message d'erreur
 
+  // Fonction pour obtenir la couleur associée à un type de Pokémon
   const getTypeColor = (type) => {
     const typeData = PKMN_TYPES.find(t => t.name.toLowerCase() === type.toLowerCase());
-    return typeData ? typeData.color : '#000';
+    return typeData ? typeData.color : '#000'; // Retourne la couleur ou noir par défaut
   };
 
+  // Fonction pour naviguer vers la page de détail du Pokémon
   const handleClick = () => {
     navigate(`/pokemon/${id}`);
   };

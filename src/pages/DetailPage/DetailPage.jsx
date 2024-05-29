@@ -6,13 +6,14 @@ import { MAX_STAT, PKMN_TYPES } from '../../constants/constants';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './DetailPage.module.css';
 
+// Obtient la couleur associée à un type de Pokémon
 const getTypeColor = (type) => {
   const typeInfo = PKMN_TYPES.find(t => t.name.toLowerCase() === type.toLowerCase());
-  return typeInfo ? typeInfo.color : '#777';
+  return typeInfo ? typeInfo.color : '#777'; // Renvoie la couleur ou un gris par défaut
 };
 
 export const DetailPage = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // Récupère l'ID du Pokémon depuis le faux serv json
   const [pokemon, setPokemon] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,11 +23,12 @@ export const DetailPage = () => {
   const [newReview, setNewReview] = useState('');
 
   useEffect(() => {
+    // Fonction pour fetch les données du Pokémon
     const fetchPokemon = async () => {
       try {
         const response = await fetch(`http://localhost:3001/pokemons/${id}`);
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error('DB injoignable ou pokémon inexistant');
         }
         const data = await response.json();
         setPokemon(data);
@@ -38,11 +40,12 @@ export const DetailPage = () => {
       }
     };
 
+    // Fonction pour récupérer les reviws sur le Pokémon
     const fetchReviews = async () => {
       try {
         const response = await fetch(`http://localhost:3001/reviews/?pokemonId=${id}`);
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error('DB injoignable ou pokémon inexistant');
         }
         const data = await response.json();
         setReviews(data);
@@ -53,26 +56,29 @@ export const DetailPage = () => {
 
     fetchPokemon();
     fetchReviews();
-  }, [id]);
+  }, [id]); // Les fonctions se déclenchent lorsque l'ID change
 
+  // Ajoute une nouvelle review
   const handleAddReview = () => {
     if (newReview) {
       const review = {
-        author: 'Me',
+        author: 'Me', 
         content: newReview,
         pokemonId: id
       };
-      setReviews([...reviews, review]);
-      setNewReview('');
+      setReviews([...reviews, review]); // Ajoute l'avis à la liste
+      setNewReview(''); // Réinitialise le champ de texte
     }
   };
 
+  // Ajoute un avis si on appuye sur entrée est pressée
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       handleAddReview();
     }
   };
 
+  // Gère les likes
   const handleLike = async () => {
     const updatedLikes = isLiked ? likes - 1 : likes + 1;
     setLikes(updatedLikes);
@@ -88,17 +94,17 @@ export const DetailPage = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update likes on the server');
+        throw new Error('Impossible de charger les likes');
       }
     } catch (error) {
       console.error('Error updating likes:', error);
-      setLikes(isLiked ? likes + 1 : likes - 1);
+      setLikes(isLiked ? likes + 1 : likes - 1); 
       setIsLiked(isLiked);
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  if (loading) return <div>Loading...</div>; 
+  if (error) return <div>Error: {error.message}</div>; 
 
   return (
     <div className="container detail-page" style={{ backgroundImage: '(../../assets/pokeball_bg.svg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
@@ -115,7 +121,7 @@ export const DetailPage = () => {
           </div>
           <div className="likes mt-3">
             <span role="img" aria-label="heart" onClick={handleLike} className="like-icon" style={{ cursor: 'pointer' }}>
-              {isLiked ? '❤️' : '🤍'}
+              {isLiked ? '❤️' : '🤍'} {/* Affiche le cœur plein ou vide */}
             </span> {likes}
           </div>
         </div>

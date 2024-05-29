@@ -105,7 +105,8 @@
         "Special attack": 100,
         "Special defense": 100,
         "Speed": 80
-      }
+      },
+      "likes": 7
     },
     {
       "id": "4",
