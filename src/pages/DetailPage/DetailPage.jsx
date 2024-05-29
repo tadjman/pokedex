@@ -2,133 +2,147 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { ProgressBar } from '../../components/ProgressBar/ProgressBar';
 import { Review } from '../../components/Review/Review';
+import { MAX_STAT, PKMN_TYPES } from '../../constants/constants';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './DetailPage.module.css';
 
-const MAX_STAT = {
-  attack: 130,
-  defense: 180,
-  specialAttack: 135,
-  specialDefense: 120,
-  speed: 120,
-  hp: 105,
-};
-
 const getTypeColor = (type) => {
-  const PKMN_TYPES = [
-    { name: 'normal', color: '#A8A77A' },
-    { name: 'fighting', color: '#C22E28' },
-    { name: 'flying', color: '#A98FF3' },
-    { name: 'poison', color: '#A33EA1' },
-    { name: 'ground', color: '#E2BF65' },
-    { name: 'rock', color: '#B6A136' },
-    { name: 'bug', color: '#A6B91A' },
-    { name: 'ghost', color: '#735797' },
-    { name: 'steel', color: '#B7B7CE' },
-    { name: 'fire', color: '#EE8130' },
-    { name: 'water', color: '#6390F0' },
-    { name: 'grass', color: '#7AC74C' },
-    { name: 'electric', color: '#F7D02C' },
-    { name: 'psychic', color: '#F95587' },
-    { name: 'ice', color: '#96D9D6' },
-    { name: 'dragon', color: '#6F35FC' },
-    { name: 'dark', color: '#705746' },
-    { name: 'fairy', color: '#D685AD' },
-    { name: 'unknown', color: '#68A090' },
-    { name: 'shadow', color: '#705898' },
-  ];
-  const typeInfo = PKMN_TYPES.find(t => t.name === type);
+  const typeInfo = PKMN_TYPES.find(t => t.name.toLowerCase() === type.toLowerCase());
   return typeInfo ? typeInfo.color : '#777';
 };
 
 export const DetailPage = () => {
-  const { id } = useParams(); // Utilisation de useParams pour obtenir l'ID depuis l'URL
+  const { id } = useParams();
   const [pokemon, setPokemon] = useState(null);
-  const [reviews, setReviews] = useState([
-    { text: "This pokemon has been my partner from the beginning. It's incredibly loyal and strong.", author: "Ash Ketchum" },
-    { text: "I've always been amazed by the versatility of this pokemon in battles. It's a tough opponent in the water.", author: "Misty" },
-    { text: "Its determination and will to win is unmatched. It's always a pleasure to see it in action.", author: "Brock" },
-    { text: "Ok this pokemon is my ever favorite, it's actually a dog!", author: "Me" },
-  ]);
-  const [newReview, setNewReview] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [likes, setLikes] = useState(0);
+  const [isLiked, setIsLiked] = useState(false);
+  const [reviews, setReviews] = useState([]);
+  const [newReview, setNewReview] = useState('');
 
   useEffect(() => {
-    const fetchPokemonDetails = async () => {
+    const fetchPokemon = async () => {
       try {
-        const response = await fetch(`/api/pokemon/${id}`);
+        const response = await fetch(`http://localhost:3001/pokemons/${id}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
         setPokemon(data);
-        setLikes(data.likes);
-      } catch (error) {
-        console.error('Error fetching the Pokémon details:', error);
+        setLikes(data.like);
+        setLoading(false);
+      } catch (err) {
+        setError(err);
+        setLoading(false);
       }
     };
 
-    fetchPokemonDetails();
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch(`http://localhost:3001/reviews/?pokemonId=${id}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setReviews(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchPokemon();
+    fetchReviews();
   }, [id]);
 
-  const handleReviewSubmit = (e) => {
-    if (e.key === 'Enter' && newReview) {
-      setReviews([...reviews, { text: newReview, author: 'Me' }]);
+  const handleAddReview = () => {
+    if (newReview) {
+      const review = {
+        author: 'Me',
+        content: newReview,
+        pokemonId: id
+      };
+      setReviews([...reviews, review]);
       setNewReview('');
     }
   };
 
-  const handleLikeClick = () => {
-    setLikes(likes + 1);
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleAddReview();
+    }
   };
 
-  if (!pokemon) {
-    return <div>Loading...</div>;
-  }
+  const handleLike = async () => {
+    const updatedLikes = isLiked ? likes - 1 : likes + 1;
+    setLikes(updatedLikes);
+    setIsLiked(!isLiked);
+
+    try {
+      const response = await fetch(`http://localhost:3001/pokemons/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ likes: updatedLikes }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update likes on the server');
+      }
+    } catch (error) {
+      console.error('Error updating likes:', error);
+      setLikes(isLiked ? likes + 1 : likes - 1);
+      setIsLiked(isLiked);
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div className="container detail-page">
+    <div className="container detail-page" style={{ backgroundImage: '(../../assets/pokeball_bg.svg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
       <div className="row">
-        <div className="col-md-6">
-          <img src={pokemon.image} alt={pokemon.name} className="img-fluid" />
-        </div>
-        <div className="col-md-6">
-          <h2>{pokemon.name}</h2>
+        <div className="col-md-6 text-center">
+          <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`} alt={pokemon.name} className="img-fluid" />
+          <h2 className="my-3">{pokemon.name}</h2>
           <div className="types mb-3">
-            {pokemon.types.map(type => (
-              <span key={type} className="badge badge-pill" style={{ backgroundColor: getTypeColor(type), color: 'white', marginRight: '5px' }}>{type}</span>
+            {pokemon.types.map((type) => (
+              <span key={type} className="badge badge-pill mr-2" style={{ backgroundColor: getTypeColor(type) }}>
+                {type}
+              </span>
             ))}
           </div>
-          <ul className="list-unstyled">
-            {Object.keys(pokemon.stats).map(stat => (
-              <li key={stat} className="mb-2">
-                <ProgressBar
-                  label={stat.charAt(0).toUpperCase() + stat.slice(1)}
-                  value={pokemon.stats[stat]}
-                  max={MAX_STAT[stat]}
-                />
-              </li>
-            ))}
-          </ul>
           <div className="likes mt-3">
-            <i className="fa fa-heart" onClick={handleLikeClick} style={{ color: 'red', cursor: 'pointer' }}></i> {likes}
+            <span role="img" aria-label="heart" onClick={handleLike} className="like-icon" style={{ cursor: 'pointer' }}>
+              {isLiked ? '❤️' : '🤍'}
+            </span> {likes}
+          </div>
+        </div>
+        <div className="col-md-6">
+          <div className="stats">
+            <ProgressBar label="HP" value={pokemon.base.HP} max={MAX_STAT.hp} />
+            <ProgressBar label="Attack" value={pokemon.base.Attack} max={MAX_STAT.attack} />
+            <ProgressBar label="Defense" value={pokemon.base.Defense} max={MAX_STAT.defense} />
+            <ProgressBar label="Special Attack" value={pokemon.base['Special attack']} max={MAX_STAT.specialAttack} />
+            <ProgressBar label="Special Defense" value={pokemon.base['Special defense']} max={MAX_STAT.specialDefense} />
+            <ProgressBar label="Speed" value={pokemon.base.Speed} max={MAX_STAT.speed} />
           </div>
         </div>
       </div>
-      <div className="row mt-4">
-        <div className="col-md-8 offset-md-2">
-          <h3>Reviews</h3>
-          <input
-            type="text"
-            placeholder="Add a review"
-            value={newReview}
-            onChange={(e) => setNewReview(e.target.value)}
-            onKeyDown={handleReviewSubmit}
-            className="form-control mb-3"
-          />
-          {reviews.map((review, index) => (
-            <Review key={index} author={review.author} content={review.text} />
-          ))}
-        </div>
+      <div className="reviews mt-5">
+        <h3>Reviews</h3>
+        <textarea
+          placeholder="Add a review"
+          value={newReview}
+          onChange={(e) => setNewReview(e.target.value)}
+          onKeyPress={handleKeyPress}
+          className="form-control mb-3"
+          maxLength="100"
+        ></textarea>
+        {reviews.map((review, index) => (
+          <Review key={index} content={review.content} author={review.author} />
+        ))}
       </div>
     </div>
   );

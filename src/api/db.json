@@ -33,7 +33,8 @@
         "Special attack": 65,
         "Special defense": 65,
         "Speed": 45
-      }
+      },
+      "likes": 11
     },
     {
       "id": "2",
@@ -68,7 +69,8 @@
         "Special attack": 80,
         "Special defense": 80,
         "Speed": 60
-      }
+      },
+      "likes": 15
     },
     {
       "id": "3",
@@ -171,11 +173,12 @@
         "Special attack": 80,
         "Special defense": 65,
         "Speed": 80
-      }
+      },
+      "likes": 12
     },
     {
       "id": "6",
-      "like": 0,
+      "like": null,
       "name": "Dracaufeu",
       "types": [
         "Fire",
@@ -308,7 +311,8 @@
         "Special attack": 85,
         "Special defense": 105,
         "Speed": 78
-      }
+      },
+      "likes": 0
     },
     {
       "id": "10",
@@ -1375,7 +1379,8 @@
         "Special attack": 85,
         "Special defense": 50,
         "Speed": 45
-      }
+      },
+      "likes": 0
     },
     {
       "id": "41",
@@ -1792,7 +1797,8 @@
         "Special attack": 40,
         "Special defense": 40,
         "Speed": 90
-      }
+      },
+      "likes": 0
     },
     {
       "id": "53",
@@ -2582,7 +2588,8 @@
         "Special attack": 45,
         "Special defense": 45,
         "Speed": 35
-      }
+      },
+      "likes": null
     },
     {
       "id": "76",
@@ -2617,7 +2624,8 @@
         "Special attack": 55,
         "Special defense": 65,
         "Speed": 45
-      }
+      },
+      "likes": 0
     },
     {
       "id": "77",
