@@ -6,14 +6,14 @@ import { MAX_STAT, PKMN_TYPES } from '../../constants/constants';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './DetailPage.module.css';
 
-// Obtient la couleur associée à un type de Pokémon
+// Get color by Pokemon type
 const getTypeColor = (type) => {
   const typeInfo = PKMN_TYPES.find(t => t.name.toLowerCase() === type.toLowerCase());
-  return typeInfo ? typeInfo.color : '#777'; // Renvoie la couleur ou un gris par défaut
+  return typeInfo ? typeInfo.color : '#777'; // Return correct color or grey if error
 };
 
 export const DetailPage = () => {
-  const { id } = useParams(); // Récupère l'ID du Pokémon depuis le faux serv json
+  const { id } = useParams(); // Get pokemon id from fake server
   const [pokemon, setPokemon] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,7 +23,7 @@ export const DetailPage = () => {
   const [newReview, setNewReview] = useState('');
 
   useEffect(() => {
-    // Fonction pour fetch les données du Pokémon
+    // Get pokemon detail by id
     const fetchPokemon = async () => {
       try {
         const response = await fetch(`http://localhost:3001/pokemons/${id}`);
@@ -40,7 +40,7 @@ export const DetailPage = () => {
       }
     };
 
-    // Fonction pour récupérer les reviws sur le Pokémon
+    // Get pokemon review by id
     const fetchReviews = async () => {
       try {
         const response = await fetch(`http://localhost:3001/reviews/?pokemonId=${id}`);
@@ -56,9 +56,9 @@ export const DetailPage = () => {
 
     fetchPokemon();
     fetchReviews();
-  }, [id]); // Les fonctions se déclenchent lorsque l'ID change
+  }, [id]); // *****
 
-  // Ajoute une nouvelle review
+  // add new review
   const handleAddReview = () => {
     if (newReview) {
       const review = {
@@ -66,19 +66,19 @@ export const DetailPage = () => {
         content: newReview,
         pokemonId: id
       };
-      setReviews([...reviews, review]); // Ajoute l'avis à la liste
-      setNewReview(''); // Réinitialise le champ de texte
+      setReviews([...reviews, review]); // Add new review to review list
+      setNewReview(''); // Fill review field with '...'
     }
   };
 
-  // Ajoute un avis si on appuye sur entrée est pressée
+  // Add review if ENTER is pressed
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       handleAddReview();
     }
   };
 
-  // Gère les likes
+  // Change like number by click 
   const handleLike = async () => {
     const updatedLikes = isLiked ? likes - 1 : likes + 1;
     setLikes(updatedLikes);
@@ -121,7 +121,7 @@ export const DetailPage = () => {
           </div>
           <div className="likes mt-3">
             <span role="img" aria-label="heart" onClick={handleLike} className="like-icon" style={{ cursor: 'pointer' }}>
-              {isLiked ? '❤️' : '🤍'} {/* Affiche le cœur plein ou vide */}
+              {isLiked ? '❤️' : '🤍'} {/*Show like red or white */}
             </span> {likes}
           </div>
         </div>
