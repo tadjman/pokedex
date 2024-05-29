@@ -29,7 +29,7 @@ export const ProgressBar = ({ label, value, max }) => {
           aria-valuemin="0" 
           aria-valuemax={max}
         >
-          <span className="progress-bar-text" style={{ color: '#fff', fontWeight: 'bold' }}>{Math.round(percentage)}%</span>
+          
         </div>
       </div>
     </div>
